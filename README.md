@@ -1,52 +1,86 @@
 # Weather Alert System Backend
 
-This is the backend service for the Weather Alert System, a full-stack application that allows users to monitor real-time weather conditions and create alerts based on specific weather parameters.
+A robust and scalable backend service for the Weather Alert System application that provides real-time weather monitoring and customizable alerts based on specific weather parameters.
 
 ## Features
 
-- Integration with Tomorrow.io API for real-time weather data
-- REST API for creating and managing weather alerts
-- Scheduled job to evaluate alerts every 5 minutes
-- MongoDB for data persistence
+- Real-time weather data integration with Tomorrow.io API
+- RESTful API endpoints for weather alerts management
+- Automated alert evaluation every 5 minutes
+- Email notifications for triggered alerts
+- Mock weather service for development and testing
+- AI-powered weather analysis using OpenAI and Hugging Face
 
 ## Tech Stack
 
-- Node.js
-- TypeScript
-- Express
-- MongoDB (using Mongoose)
-- Zod for schema validation
-- TSyringe for dependency injection
+- **Runtime**: Node.js with TypeScript
+- **Web Framework**: Express
+- **Database**: MongoDB with Mongoose
+- **Validation**: Zod for schema validation
+- **Dependency Injection**: TSyringe
+- **Scheduling**: node-cron
+- **Notifications**: Nodemailer
+- **Logging**: Winston
+- **AI Integration**: OpenAI and Hugging Face APIs
 
 ## Project Structure
 
-- `src/config`: Configuration and environment variables
-- `src/controllers`: Request handlers
-- `src/di`: Dependency injection container
-- `src/models`: MongoDB models
-- `src/repositories`: Data access layer
-- `src/routes`: API routes
-- `src/schemas`: Data validation schemas
-- `src/services`: Business logic
-- `src/types`: TypeScript interfaces and types
-- `src/utils`: Utility functions
+```
+src/
+├── api/              # API-related functionality
+├── app-registry/     # Application registry setup
+├── config/           # Configuration settings
+├── controllers/      # Request handlers
+├── data-access-layer/# Database access logic
+├── ErrorHandling/    # Error handling utilities
+├── middleware/       # Express middleware
+├── notifications/    # Email notification system
+├── routes/           # API route definitions
+├── schedule-tasks/   # Scheduled jobs
+├── services/         # Business logic
+├── types/            # TypeScript type definitions
+├── utils/            # Utility functions
+├── validations/      # Input validation schemas
+├── app.ts            # Express application setup
+└── index.ts          # Entry point
+```
 
-## Setup and Running
+## Getting Started
 
 ### Prerequisites
 
 - Node.js (v14 or higher)
 - MongoDB (local instance or Atlas URI)
+- Tomorrow.io API key
 
 ### Environment Variables
 
 Create a `.env` file in the root directory with the following variables:
 
 ```
+# Server Configuration
 PORT=3000
+
+# Database
 MONGODB_URI=mongodb://localhost:27017/weather-alert-system
+MONGO_USERNAME=your_mongodb_username
+MONGO_PASSWORD=your_mongodb_password
+
+# Weather API
 TOMORROW_API_KEY=your_api_key
 TOMORROW_API_URL=https://api.tomorrow.io/v4
+USE_MOCK_WEATHER=false
+
+# Email Configuration
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+EMAIL_FROM=your_email@gmail.com
+
+# AI Services (Optional)
+OPENAI_API_KEY=your_openai_key
+OPENAI_MODEL=gpt-4o
+HUGGINGFACE_SPACE_URL=your_huggingface_url
+USE_FREE_MODEL=false
 ```
 
 ### Installation
@@ -80,3 +114,18 @@ npm run dev
 - `GET /api/alerts/:id` - Get a specific alert
 - `PUT /api/alerts/:id` - Update an alert
 - `DELETE /api/alerts/:id` - Delete an alert 
+
+## Mock Weather Service
+
+For development and testing, you can enable the mock weather service:
+
+1. Set `USE_MOCK_WEATHER=true` in your .env file
+2. The mock service provides randomized but realistic weather data
+3. Helpful logs will indicate when mock data is being used
+
+## Logging
+
+The application uses Winston for structured logging. Logs are stored in the `logs/` directory:
+
+- `combined.log` - Contains all log levels
+- `error.log` - Contains only error logs
