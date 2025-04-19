@@ -12,7 +12,7 @@ API is available through [https://alertrix-client.vercel.app/](https://alertrix-
 1. **Clone the repository**
    ```bash
    git clone https://github.com/AdamOliver1/Alertrix-Server.git
-   cd Alertrix-Server/backend
+   cd Alertrix-Server
    ```
 
 2. **Install dependencies**
