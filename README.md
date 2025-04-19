@@ -31,6 +31,8 @@ API is available through [https://alertrix-client.vercel.app/](https://alertrix-
 5. **Verify the server**
    Open http://localhost:3000/health - should return `{"status":"ok"}`
 
+## Project Details
+
 ### Features
 - Real-time weather data integration with Tomorrow.io API
 - RESTful API endpoints for weather alerts management
