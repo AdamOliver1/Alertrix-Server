@@ -12,7 +12,7 @@ API is available through [https://alertrix-client.vercel.app/](https://alertrix-
 1. **Clone the repository**
    ```bash
    git clone https://github.com/yourusername/weather-alert-system.git
-   cd weather-alert-system/backend
+   cd Alertrix-Server/backend
    ```
 
 2. **Install dependencies**
