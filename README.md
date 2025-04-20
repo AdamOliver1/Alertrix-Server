@@ -11,8 +11,8 @@ API is available through [https://alertrix-client.vercel.app/](https://alertrix-
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/weather-alert-system.git
-   cd weather-alert-system/backend
+   git clone https://github.com/AdamOliver1/Alertrix-Server.git
+   cd Alertrix-Server
    ```
 
 2. **Install dependencies**
@@ -32,9 +32,6 @@ API is available through [https://alertrix-client.vercel.app/](https://alertrix-
    Open http://localhost:3000/health - should return `{"status":"ok"}`
 
 ## Project Details
-
-### Source
-- **Repository**: [https://github.com/yourusername/weather-alert-system](https://github.com/yourusername/weather-alert-system)
 
 ### Features
 - Real-time weather data integration with Tomorrow.io API
