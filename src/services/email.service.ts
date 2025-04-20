@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import { logger } from '../utils/logger';
 import { AppError } from '../ErrorHandling/AppError';
 import { config } from '../config';
+import { IEmailService } from './interfaces/email.service.interface';
 
 export interface EmailOptions {
   to: string;
@@ -11,7 +12,7 @@ export interface EmailOptions {
 }
 
 @injectable()
-export class EmailService {
+export class EmailService implements IEmailService {
   private transporter: nodemailer.Transporter;
   private fromAddress: string;
 

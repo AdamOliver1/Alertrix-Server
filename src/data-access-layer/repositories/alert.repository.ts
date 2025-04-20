@@ -1,10 +1,10 @@
 import { injectable } from 'tsyringe';
 import { Alert, AlertDto } from '../../types/alert';
 import { AlertModel, AlertDocument } from '../models/alert.model';
-import { AlertDataLayer } from './interfaces/AlertDataLayer';
+import { IAlertRepository } from './interfaces/alert.repository.interface';
 
 @injectable()
-export class AlertRepository implements AlertDataLayer {
+export class AlertRepository implements IAlertRepository {
   async create(data: AlertDto): Promise<Alert> {
     const newAlert = new AlertModel(data);
     const saved = await newAlert.save();

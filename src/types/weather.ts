@@ -31,7 +31,14 @@ export interface Location {
 
 export type WeatherParameter = keyof Omit<WeatherData, 'location' | 'units'>;
 
-export type ThresholdOperator = '>' | '<' | '>=' | '<=' | '=' | '!=';
+export enum ThresholdOperator {
+  GREATER_THAN = '>',
+  LESS_THAN = '<',
+  GREATER_THAN_OR_EQUAL = '>=',
+  LESS_THAN_OR_EQUAL = '<=',
+  EQUAL = '=',
+  NOT_EQUAL = '!='
+}
 
 export interface ThresholdCondition {
   parameter: WeatherParameter;

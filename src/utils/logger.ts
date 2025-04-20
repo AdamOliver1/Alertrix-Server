@@ -1,7 +1,6 @@
 import { createLogger, format, transports, Logger } from 'winston';
 import path from 'path';
 import fs from 'fs';
-import { config } from '../config';
 
 // Create logs directory if it doesn't exist
 const logsDir = path.join(process.cwd(), 'logs');
@@ -9,8 +8,9 @@ if (!fs.existsSync(logsDir)) {
   fs.mkdirSync(logsDir);
 }
 
-// Determine if we're in production
-const isProd = config.isProduction;
+// Determine if we're in production directly from env vars
+// This avoids circular dependency with config module
+const isProd = process.env.NODE_ENV === 'production';
 
 // Create the logger
 const logger: Logger = createLogger({

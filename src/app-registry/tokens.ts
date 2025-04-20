@@ -13,10 +13,13 @@ export const Tokens = {
   AlertNotificationService: 'AlertNotificationService',
   MessageCreator: 'IMessageCreator',
   
+   // Notification Handlers
+  EmailNotificationHandler: 'IEmailNotificationHandler',
+  
   // API Clients
-  OpenAIClient: 'OpenAIClient',
-  HuggingFaceClient: 'HuggingFaceClient',
-  TomorrowApiClient: 'TomorrowApiClient',
+  OpenAIClient: 'IOpenAIClient',
+  HuggingFaceClient: 'IHuggingFaceClient',
+  TomorrowApiClient: 'ITomorrowApiClient',
   
   // Controllers
   WeatherController: 'WeatherController',

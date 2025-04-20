@@ -1,20 +1,21 @@
 import { injectable, inject } from 'tsyringe';
 import { Handler } from '../NotificationHandler';
 import { AlertNotificationData } from '../notifications/AlertNotificationHandler';
-import { EmailService } from '../../services/email.service';
+import { IEmailService } from '../../services/interfaces/email.service.interface';
 import { Tokens } from '../../app-registry/tokens';
 import { IMessageCreator } from '../../services/interfaces/message-creator.interface';
 import { logger } from '../../utils/logger';
 import { AppError } from '../../ErrorHandling/AppError';
+import { IEmailNotificationHandler } from './interfaces/notification-handler.interface';
 
 /**
  * Email handler for alert notifications
  * Sends alert notifications via email
  */
 @injectable()
-export class EmailHandler implements Handler<AlertNotificationData> {
+export class EmailHandler implements Handler<AlertNotificationData>, IEmailNotificationHandler {
   constructor(
-    @inject(Tokens.EmailService) private emailService: EmailService,
+    @inject(Tokens.EmailService) private emailService: IEmailService,
     @inject(Tokens.MessageCreator) private messageCreator: IMessageCreator
   ) {}
 
@@ -48,7 +49,6 @@ export class EmailHandler implements Handler<AlertNotificationData> {
         alertName: data.alert.name
       });
       
-      // Create an AppError with isOperational = false to ensure it's logged as an error
       const appError = new AppError(
         `Failed to process alert notification for ${data.alert.name}: ${(error as Error).message}`,
         500,

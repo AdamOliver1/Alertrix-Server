@@ -2,6 +2,7 @@ import { injectable } from 'tsyringe';
 import OpenAI from 'openai';
 import { handleOpenAIError } from '../ErrorHandling/errorHandlers';
 import { config } from '../config';
+import { IOpenAIClient } from './interfaces/api-clients.interface';
 
 /**
  * Client for interacting with the OpenAI API
@@ -9,7 +10,7 @@ import { config } from '../config';
  * Uses the latest OpenAI SDK best practices
  */
 @injectable()
-export class OpenAIClient {
+export class OpenAIClient implements IOpenAIClient {
   private client: OpenAI;
   private defaultModel: string;
 

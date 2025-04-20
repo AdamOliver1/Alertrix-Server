@@ -1,6 +1,6 @@
 import { Alert, AlertDto } from '../../../types/alert';
 
-export interface AlertDataLayer {
+export interface IAlertRepository {
   create(data: AlertDto): Promise<Alert>;
   findAll(): Promise<Alert[]>;
   findById(id: string): Promise<Alert | null>;

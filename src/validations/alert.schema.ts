@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { WeatherParameter } from '../types/weather';
+import { WeatherParameter, ThresholdOperator } from '../types/weather';
 
 // Location schema
 export const locationSchema = z.object({
@@ -31,7 +31,7 @@ const weatherParameterSchema = z.enum([
 // Threshold condition schema
 export const thresholdConditionSchema = z.object({
   parameter: weatherParameterSchema,
-  operator: z.enum(['>', '<', '>=', '<=', '=', '!=']),
+  operator: z.nativeEnum(ThresholdOperator),
   value: z.number(),
 });
 

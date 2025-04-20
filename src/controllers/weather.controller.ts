@@ -3,7 +3,11 @@ import { inject, injectable } from 'tsyringe';
 import { IWeatherService } from '../services/interfaces/weather-service.interface';
 import { getWeatherQuerySchema } from '../validations/alert.schema';
 import { Location } from '../types/weather';
-import { AppError } from '../ErrorHandling/AppError';
+import { 
+  handleValidationError, 
+  handleValidationErrorInController, 
+  handleMissingFields 
+} from '../ErrorHandling/errorHandlers';
 import { Tokens } from '../app-registry/tokens';
 
 @injectable()
@@ -15,7 +19,7 @@ export class WeatherController {
     const queryResult = getWeatherQuerySchema.safeParse(req.query);
     
     if (!queryResult.success) {
-      throw new AppError('Invalid weather query parameters', 400, 'Please check your query parameters and try again.');
+      throw handleValidationError(queryResult, 'Invalid weather query parameters', 'Please check your query parameters and try again.');
     }
     
     const { city, lat, lon, units } = queryResult.data;
@@ -27,7 +31,7 @@ export class WeatherController {
     } else if (lat && lon) {
       location = { lat, lon };
     } else {
-      throw new AppError('Missing location parameters', 400, 'Please provide either city or lat/lon coordinates.');
+      throw handleMissingFields(['city or lat/lon']);
     }
     
     const weatherData = await this.weatherService.getCurrentWeather(location, units);

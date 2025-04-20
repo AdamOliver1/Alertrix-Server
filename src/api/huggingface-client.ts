@@ -3,13 +3,14 @@ import axios from 'axios';
 import { logger } from '../utils/logger';
 import { handleHuggingFaceError } from '../ErrorHandling/errorHandlers';
 import { config } from '../config';
+import { IHuggingFaceClient } from './interfaces/api-clients.interface';
 
 /**
  * Client for interacting with the Hugging Face Space API
  * Centralizes all Hugging Face API calls in the application
  */
 @injectable()
-export class HuggingFaceClient {
+export class HuggingFaceClient implements IHuggingFaceClient {
   private apiUrl: string;
 
   constructor() {

@@ -3,7 +3,10 @@ import { inject, injectable } from 'tsyringe';
 import { IAlertService } from '../services/interfaces/alert.service.interface';
 import { createAlertSchema } from '../validations/alert.schema';
 import { Tokens } from '../app-registry/tokens';
-import { AppError } from '../ErrorHandling/AppError';
+import { 
+  handleValidationError, 
+  handleResourceNotFound 
+} from '../ErrorHandling/errorHandlers';
 
 @injectable()
 export class AlertController {
@@ -11,10 +14,9 @@ export class AlertController {
 
   createAlert = async (req: Request, res: Response): Promise<void> => {
     // Validate request body
-    
     const bodyResult = createAlertSchema.safeParse(req.body);
     if (!bodyResult.success) {
-      throw new AppError('Invalid alert data', 400, 'Please check your input and try again.');
+      throw handleValidationError(bodyResult, 'Invalid alert data');
     }
     
     const alert = await this.alertService.createAlert(bodyResult.data);
@@ -27,7 +29,7 @@ export class AlertController {
     const alert = await this.alertService.getAlertById(id);
     
     if (!alert) {
-      throw new AppError(`Alert with ID ${id} not found`, 404, 'Alert not found');
+      throw handleResourceNotFound('Alert', id);
     }
     
     res.json(alert);
@@ -40,13 +42,13 @@ export class AlertController {
     const bodyResult = createAlertSchema.partial().safeParse(req.body);
     
     if (!bodyResult.success) {
-      throw new AppError('Invalid alert data', 400, 'Please check your input and try again.');
+      throw handleValidationError(bodyResult, 'Invalid alert data');
     }
     
     const alert = await this.alertService.updateAlert(id, bodyResult.data);
     
     if (!alert) {
-      throw new AppError(`Alert with ID ${id} not found`, 404, 'Alert not found');
+      throw handleResourceNotFound('Alert', id);
     }
     
     res.json(alert);
@@ -58,7 +60,7 @@ export class AlertController {
     const success = await this.alertService.deleteAlert(id);
     
     if (!success) {
-      throw new AppError(`Alert with ID ${id} not found`, 404, 'Alert not found');
+      throw handleResourceNotFound('Alert', id);
     }
     
     res.status(204).end();
@@ -81,7 +83,7 @@ export class AlertController {
     const alert = await this.alertService.restartAlert(id);
     
     if (!alert) {
-      throw new AppError(`Alert with ID ${id} not found`, 404, 'Alert not found');
+      throw handleResourceNotFound('Alert', id);
     }
     
     res.json(alert);

@@ -3,8 +3,8 @@ import { container } from '../app-registry/container';
 import { IAlertService } from '../services/interfaces/alert.service.interface';
 import { logger } from '../utils/logger';
 
-// Default schedule is every 5 minutes
-const DEFAULT_SCHEDULE = '*/5 * * * *';
+// Default schedule is every 10 minutes
+const DEFAULT_SCHEDULE = '*/10 * * * *';
 
 export class Scheduler {
   private schedule: string;

@@ -5,13 +5,14 @@ import { config } from '../config';
 import { logger } from '../utils/logger';
 import { AppError } from '../ErrorHandling/AppError';
 import { handleWeatherApiError } from '../ErrorHandling/errorHandlers';
+import { ITomorrowApiClient } from './interfaces/api-clients.interface';
 
 /**
  * Client for interacting with the Tomorrow.io API
  * Centralizes all Tomorrow.io API calls in the application
  */
 @injectable()
-export class TomorrowApiClient {
+export class TomorrowApiClient implements ITomorrowApiClient {
   private apiKey: string;
   private baseUrl: string;
 
@@ -92,53 +93,5 @@ export class TomorrowApiClient {
       },
       units,
     };
-  }
-
-  /**
-   * Gets forecast data for a specific location
-   * @param location The location to get forecast data for
-   * @param days Optional number of days for the forecast (defaults to 5)
-   * @param units The units to use (metric or imperial)
-   * @returns Forecast data
-   * @throws AppError if there's any issue with the API call
-   */
-  public async getForecast(
-    location: Location | string, 
-    days = 5, 
-    units: 'metric' | 'imperial' = 'metric'
-  ): Promise<any> {
-    try {
-      // Check if API key is configured
-      if (!this.apiKey) {
-        throw new Error('Weather API key not configured');
-      }
-
-      let locationParam: string;
-      if (typeof location === 'string') {
-        // Assume it's a city name
-        locationParam = encodeURIComponent(location);
-      } else {
-        // Use lat,lon format
-        locationParam = `${location.lat},${location.lon}`;
-      }
-
-      const url = `${this.baseUrl}/weather/forecast`;
-      
-      const response = await axios.get(url, {
-        params: {
-          apikey: this.apiKey,
-          location: locationParam,
-          units,
-          timesteps: '1d',
-          startTime: 'now',
-          endTime: `nowPlus${days}d`
-        }
-      });
-
-      return response.data;
-    } catch (error) {
-      // Use specialized weather API error handler with forecast context
-      throw handleWeatherApiError(error, location, { units, days, endpoint: 'forecast' });
-    }
   }
 } 

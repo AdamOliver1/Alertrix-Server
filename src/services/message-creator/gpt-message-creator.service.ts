@@ -2,14 +2,14 @@ import { injectable, inject } from 'tsyringe';
 import { IMessageCreator } from '../interfaces/message-creator.interface';
 import { AlertNotificationData } from '../../notifications/notifications/AlertNotificationHandler';
 import { EmailResponse, MessagePromptBuilder } from './message-prompt-builder';
-import { OpenAIClient } from '../../api';
+import { IOpenAIClient } from '../../api/interfaces/api-clients.interface';
 import { Tokens } from '../../app-registry/tokens';
 import { logger } from '../../utils/logger';
 
 @injectable()
 export class GPTMessageCreator implements IMessageCreator {
   constructor(
-    @inject(Tokens.OpenAIClient) private openaiClient: OpenAIClient
+    @inject(Tokens.OpenAIClient) private openaiClient: IOpenAIClient
   ) {}
 
   /**

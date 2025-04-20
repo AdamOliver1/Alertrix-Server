@@ -2,14 +2,14 @@ import { injectable, inject } from 'tsyringe';
 import { IMessageCreator } from '../interfaces/message-creator.interface';
 import { AlertNotificationData } from '../../notifications/notifications/AlertNotificationHandler';
 import { EmailResponse, MessagePromptBuilder } from './message-prompt-builder';
-import { HuggingFaceClient } from '../../api';
+import { IHuggingFaceClient } from '../../api/interfaces/api-clients.interface';
 import { Tokens } from '../../app-registry/tokens';
 import { logger } from '../../utils/logger';
 
 @injectable()
 export class HuggingfaceMessageCreator implements IMessageCreator {
   constructor(
-    @inject(Tokens.HuggingFaceClient) private huggingFaceClient: HuggingFaceClient
+    @inject(Tokens.HuggingFaceClient) private huggingFaceClient: IHuggingFaceClient
   ) {}
 
   /**

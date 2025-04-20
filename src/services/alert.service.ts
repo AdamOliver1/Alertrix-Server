@@ -1,27 +1,29 @@
 import { injectable, inject } from 'tsyringe';
 import { Alert, AlertStatus, AlertDto  } from '../types/alert';
-import { AlertDataLayer } from '../data-access-layer/repositories/interfaces/AlertDataLayer';
+import { IAlertRepository } from '../data-access-layer/repositories/interfaces/alert.repository.interface';
 import { IWeatherService } from './interfaces/weather-service.interface';
 import { IAlertService } from './interfaces/alert.service.interface';
-import { ThresholdCondition } from '../types/weather';
+import { ThresholdCondition, ThresholdOperator } from '../types/weather';
 import { AlertNotificationHandler } from '../notifications/notifications/AlertNotificationHandler';
 import { Tokens } from '../app-registry/tokens';
 import { logger } from '../utils/logger';
-import { AppError } from '../ErrorHandling/AppError';
+import { validateBusinessRule } from '../ErrorHandling/errorHandlers';
 
 @injectable()
 export class AlertService implements IAlertService {
   constructor(
-    @inject(Tokens.AlertRepository) private alertRepository: AlertDataLayer,
+    @inject(Tokens.AlertRepository) private alertRepository: IAlertRepository,
     @inject(Tokens.WeatherService) private weatherService: IWeatherService,
     @inject(Tokens.AlertNotificationService) private alertNotificationService: AlertNotificationHandler
   ) {}
 
   async createAlert(data: AlertDto): Promise<Alert> {
     // Validate email count before creating
-    if (data.emails.length > 5) {
-      throw new AppError('Email limit exceeded', 400, 'Maximum of 5 email addresses allowed');
-    }
+    validateBusinessRule(
+      data.emails.length <= 5,
+      'Email limit exceeded',
+      'Maximum of 5 email addresses allowed'
+    );
     return this.alertRepository.create(data);
   }
 
@@ -31,8 +33,12 @@ export class AlertService implements IAlertService {
 
   async updateAlert(id: string, data: Partial<AlertDto>): Promise<Alert | null> {
     // Validate email count if emails are being updated
-    if (data.emails && data.emails.length > 5) {
-      throw new AppError('Email limit exceeded', 400, 'Maximum of 5 email addresses allowed');
+    if (data.emails) {
+      validateBusinessRule(
+        data.emails.length <= 5,
+        'Email limit exceeded',
+        'Maximum of 5 email addresses allowed'
+      );
     }
     return this.alertRepository.update(id, data);
   }
@@ -43,7 +49,7 @@ export class AlertService implements IAlertService {
 
   async getAlertStatuses(): Promise<AlertStatus[]> {
     const alerts = await this.alertRepository.findAll();
-    return alerts.map(alert => ({
+    return alerts.map((alert: Alert) => ({
       id: alert.id,
       name: alert.name,
       emails: alert.emails,
@@ -57,21 +63,23 @@ export class AlertService implements IAlertService {
     const alerts = await this.alertRepository.findAll();
 
     await Promise.all(
-      alerts.map(async (alert) => {
+      alerts.map(async (alert: Alert) => {
         try {
+          // Skip weather fetch for alerts that are already triggered
+          if (alert.isTriggered) return;
+          
           const weather = await this.weatherService.getCurrentWeather(alert.location);
           const isTriggered = this.evaluateCondition(alert.condition, weather);
           
           
           // If alert is newly triggered, send notification
-          if (!alert.isTriggered && isTriggered) {
+          if (isTriggered) {
             await this.alertRepository.updateAlertStatus(alert.id, isTriggered);
             
             // Only send notifications if there are email recipients
             if (alert.emails && alert.emails.length > 0) {
               const severity = this.determineSeverity(alert.condition, weather);
               
-              // Send notification asynchronously using the new method
               this.alertNotificationService.notifyAsync({
                 alert,
                 weather,
@@ -105,17 +113,17 @@ export class AlertService implements IAlertService {
     }
 
     switch (operator) {
-      case '>':
+      case ThresholdOperator.GREATER_THAN:
         return currentValue > value;
-      case '<':
+      case ThresholdOperator.LESS_THAN:
         return currentValue < value;
-      case '>=':
+      case ThresholdOperator.GREATER_THAN_OR_EQUAL:
         return currentValue >= value;
-      case '<=':
+      case ThresholdOperator.LESS_THAN_OR_EQUAL:
         return currentValue <= value;
-      case '=':
+      case ThresholdOperator.EQUAL:
         return currentValue === value;
-      case '!=':
+      case ThresholdOperator.NOT_EQUAL:
         return currentValue !== value;
       default:
         return false;

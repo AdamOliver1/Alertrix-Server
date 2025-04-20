@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { Alert } from '../../types/alert';
+import { ThresholdOperator } from '../../types/weather';
 
 // Interface for the document in MongoDB
 export interface AlertDocument extends Omit<Alert, 'id'>, Document {
@@ -28,7 +29,11 @@ const alertSchema = new Schema(
     },
     condition: {
       parameter: { type: String, required: true },
-      operator: { type: String, required: true, enum: ['>', '<', '>=', '<=', '=', '!='] },
+      operator: { 
+        type: String, 
+        required: true, 
+        enum: Object.values(ThresholdOperator)
+      },
       value: { type: Number, required: true },
     },
     isTriggered: { type: Boolean, default: false },

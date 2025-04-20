@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { z } from 'zod';
+import { handleConfigError } from '../ErrorHandling/errorHandlers';
 
 dotenv.config();
 
@@ -29,7 +30,11 @@ const envVars = envSchema.safeParse(process.env);
 
 if (!envVars.success) {
   console.error('❌ Invalid environment variables:', envVars.error.format());
-  throw new Error('Invalid environment variables');
+  // Create a list of missing variables from the error
+  const missingVars = Object.keys(envVars.error.format())
+    .filter(key => key !== '_errors');
+  
+  throw handleConfigError('Environment validation failed', missingVars);
 }
 
 // Export the validated config
