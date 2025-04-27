@@ -63,7 +63,7 @@ export class AlertController {
       throw handleResourceNotFound('Alert', id);
     }
     
-    res.status(204).end();
+    res.json({ success: true, id });
   };
 
   getAlertStatuses = async (_req: Request, res: Response): Promise<void> => {
@@ -71,10 +71,18 @@ export class AlertController {
     res.json(statuses);
   };
 
+  getAllAlerts = async (_req: Request, res: Response): Promise<void> => {
+    const alerts = await this.alertService.getAllAlerts();
+    res.json(alerts);
+  };
+
   // Method for testing alert evaluation
   evaluateAlertsNow = async (_req: Request, res: Response): Promise<void> => {
-    await this.alertService.evaluateAllAlerts();
-    res.json({ message: 'Alerts evaluation triggered successfully' });
+    const result = await this.alertService.evaluateAllAlerts();
+    res.json({
+      message: 'Alerts evaluation triggered successfully',
+      alertsTriggered: result.alertsTriggered
+    });
   };
   
   restartAlert = async (req: Request, res: Response): Promise<void> => {

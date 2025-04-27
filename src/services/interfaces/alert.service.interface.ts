@@ -6,6 +6,7 @@ export interface IAlertService {
   updateAlert(id: string, data: Partial<AlertDto>): Promise<Alert | null>;
   deleteAlert(id: string): Promise<boolean>;
   getAlertStatuses(): Promise<AlertStatus[]>;
-  evaluateAllAlerts(): Promise<void>;
+  getAllAlerts(): Promise<Alert[]>;
+  evaluateAllAlerts(): Promise<{ alertsTriggered: boolean }>;
   restartAlert(id: string): Promise<Alert | null>;
 } 

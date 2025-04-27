@@ -12,14 +12,3 @@ export interface IEmailNotificationHandler {
   handle(data: AlertNotificationData): Promise<void>;
 }
 
-/**
- * Generic interface for notification handlers
- * Can be extended for different notification types
- */
-export interface INotificationHandler<T> {
-  /**
-   * Handles a notification of type T
-   * @param data The notification data
-   */
-  handle(data: T): Promise<void>;
-} 

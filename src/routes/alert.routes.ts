@@ -9,6 +9,9 @@ const alertController = container.resolve(AlertController);
 // POST /api/alerts - Create a new alert
 alertRouter.post('/', asyncHandler(alertController.createAlert));
 
+// GET /api/alerts - Get all alerts (new endpoint)
+alertRouter.get('/', asyncHandler(alertController.getAllAlerts));
+
 // GET /api/alerts/status - Get status of all alerts
 alertRouter.get('/status', asyncHandler(alertController.getAlertStatuses));
 

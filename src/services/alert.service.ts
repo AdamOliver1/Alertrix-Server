@@ -59,8 +59,13 @@ export class AlertService implements IAlertService {
     }));
   }
 
-  async evaluateAllAlerts(): Promise<void> {
+  async getAllAlerts(): Promise<Alert[]> {
+    return this.alertRepository.findAll();
+  }
+
+  async evaluateAllAlerts(): Promise<{ alertsTriggered: boolean }> {
     const alerts = await this.alertRepository.findAll();
+    let alertsTriggered = false;
 
     await Promise.all(
       alerts.map(async (alert: Alert) => {
@@ -75,6 +80,7 @@ export class AlertService implements IAlertService {
           // If alert is newly triggered, send notification
           if (isTriggered) {
             await this.alertRepository.updateAlertStatus(alert.id, isTriggered);
+            alertsTriggered = true; // Set flag to true if any alert was triggered
             
             // Only send notifications if there are email recipients
             if (alert.emails && alert.emails.length > 0) {
@@ -98,6 +104,9 @@ export class AlertService implements IAlertService {
         }
       })
     );
+
+    // Return flag indicating if any alerts were triggered
+    return { alertsTriggered };
   }
 
   async restartAlert(id: string): Promise<Alert | null> {
